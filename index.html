@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="/src/styles.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Other</title>
+    <script type="module" src="/src/main.ts" defer></script>
+  </head>
+
+  <body>
+    <!-- On macOS this is the title bar itself (the window's traffic lights sit
+         over its left edge); elsewhere it's a toolbar under the native one. -->
+    <header class="toolbar" data-tauri-drag-region>
+      <div class="segmented" role="tablist">
+        <button class="segment active" data-page="accounts" type="button" role="tab">Accounts</button>
+        <button class="segment" data-page="folders" type="button" role="tab">Folders</button>
+      </div>
+    </header>
+
+    <main>
+      <p id="no-claude" class="notice" hidden>
+        Claude Code isn't installed yet. Install it from claude.com/claude-code, then come back.
+      </p>
+
+      <section id="page-accounts">
+        <div class="page-head">
+          <div class="head-row">
+            <h2>Claude Accounts</h2>
+            <button id="add-account" class="push" type="button">Add Account</button>
+          </div>
+          <p>Each account has its own login, chats and settings. Default is your usual Claude setup and is never changed.</p>
+        </div>
+        <div id="accounts" class="group"></div>
+      </section>
+
+      <section id="page-folders" hidden>
+        <div class="page-head">
+          <div class="head-row">
+            <h2>Use the right account automatically</h2>
+            <button id="add-folder" class="push" type="button">Add Folder</button>
+          </div>
+          <p>
+            Pick an account for a folder. Then <code>claude</code> started inside it,
+            in VS Code, Cursor or any terminal, uses that account. No switching.
+          </p>
+          <p class="example">e.g. <span>~/work/acme</span> → <span>Acme</span></p>
+        </div>
+        <div id="folders" class="group"></div>
+        <p id="no-folders" class="empty" hidden>No folders yet.</p>
+        <p id="shell-integration" class="caption"></p>
+      </section>
+    </main>
+
+    <footer id="license-bar" class="license-bar" hidden></footer>
+
+    <div id="toast" hidden></div>
+  </body>
+</html>

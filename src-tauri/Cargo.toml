@@ -1,0 +1,36 @@
+[package]
+name = "other"
+version = "0.1.0"
+description = "Run multiple Claude Code accounts side by side"
+authors = ["xvelopers"]
+license = "GPL-3.0-or-later"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[lib]
+# The `_lib` suffix may seem redundant but it is necessary
+# to make the lib name unique and wouldn't conflict with the bin name.
+# This seems to be only an issue on Windows, see https://github.com/rust-lang/cargo/issues/8519
+name = "other_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = ["tray-icon", "image-png"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+tauri-plugin-dialog = "2"
+trash = "5"
+ureq = { version = "3", features = ["json"] }
+uuid = { version = "1", features = ["v4"] }
+
+[features]
+# Unlocks the app without a licence, for people building it themselves.
+# `npm run build:free` / `npm run dev:free`. Official releases leave it off.
+free = []
+
+[target.'cfg(target_os = "macos")'.dependencies]
+objc2-app-kit = { version = "0.3", features = ["NSRunningApplication"] }

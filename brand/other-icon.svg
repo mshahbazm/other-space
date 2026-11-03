@@ -1,0 +1,24 @@
+<svg width="1024" height="1024" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
+  <!-- Other app icon: you (solid) and your other you (outline), overlapping -->
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#3730a3"/>
+      <stop offset="55%" stop-color="#4f46e5"/>
+      <stop offset="100%" stop-color="#7c3aed"/>
+    </linearGradient>
+    <clipPath id="meClip">
+      <circle cx="398" cy="512" r="212"/>
+    </clipPath>
+  </defs>
+
+  <rect width="1024" height="1024" rx="232" fill="url(#bg)"/>
+
+  <!-- the other you: outlined, behind -->
+  <circle cx="632" cy="512" r="212" fill="none" stroke="#ffffff" stroke-width="42" opacity="0.9"/>
+
+  <!-- you: solid, front -->
+  <circle cx="398" cy="512" r="212" fill="#ffffff"/>
+
+  <!-- the other's outline showing through where they overlap -->
+  <circle cx="632" cy="512" r="212" fill="none" stroke="#4f46e5" stroke-width="42" clip-path="url(#meClip)"/>
+</svg>

@@ -1,0 +1,104 @@
+# Builds installers for macOS, Windows and Linux when a version tag (v1.2.3)
+# is pushed, and attaches them to a draft GitHub Release.
+#
+# Signing is optional and uses repository secrets, never files in the repo.
+# Without the secrets the builds are simply unsigned. See RELEASING.md.
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: macos-latest
+            args: --target universal-apple-darwin
+          - os: windows-latest
+            args: ""
+          - os: ubuntu-22.04
+            args: ""
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Linux system libraries
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libwebkit2gtk-4.1-dev libayatana-appindicator3-dev librsvg2-dev patchelf
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          # A universal macOS build needs both Mac architectures.
+          targets: ${{ runner.os == 'macOS' && 'aarch64-apple-darwin,x86_64-apple-darwin' || '' }}
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri
+
+      - run: npm ci
+
+      # macOS: sign with a Developer ID certificate and notarize, if the
+      # secrets exist. Only non-empty values are exported, because the
+      # bundler treats a set-but-empty variable as "sign with this".
+      - name: macOS signing setup
+        if: runner.os == 'macOS'
+        shell: bash
+        env:
+          S_APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
+          S_APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
+          S_APPLE_SIGNING_IDENTITY: ${{ secrets.APPLE_SIGNING_IDENTITY }}
+          S_APPLE_ID: ${{ secrets.APPLE_ID }}
+          S_APPLE_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
+          S_APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+        run: |
+          for v in APPLE_CERTIFICATE APPLE_CERTIFICATE_PASSWORD APPLE_SIGNING_IDENTITY APPLE_ID APPLE_PASSWORD APPLE_TEAM_ID; do
+            val="$(printenv "S_$v" || true)"
+            if [ -n "$val" ]; then
+              { echo "$v<<__END__"; echo "$val"; echo "__END__"; } >> "$GITHUB_ENV"
+            fi
+          done
+
+      # Windows: sign with Azure Trusted Signing, if the secrets exist. Tauri
+      # merges tauri.windows.conf.json into the config on Windows builds.
+      - name: Windows signing setup
+        if: runner.os == 'Windows'
+        shell: pwsh
+        env:
+          AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+          TS_ENDPOINT: ${{ secrets.AZURE_TRUSTED_SIGNING_ENDPOINT }}
+          TS_ACCOUNT: ${{ secrets.AZURE_TRUSTED_SIGNING_ACCOUNT }}
+          TS_PROFILE: ${{ secrets.AZURE_TRUSTED_SIGNING_PROFILE }}
+        run: |
+          if (-not $env:AZURE_CLIENT_ID) { Write-Host "No signing secrets: building unsigned."; exit 0 }
+          cargo install trusted-signing-cli --locked
+          $sign = "trusted-signing-cli -e $env:TS_ENDPOINT -a $env:TS_ACCOUNT -c $env:TS_PROFILE -d Other %1"
+          @{ bundle = @{ windows = @{ signCommand = $sign } } } | ConvertTo-Json -Depth 5 |
+            Set-Content -Path src-tauri/tauri.windows.conf.json -Encoding utf8
+
+      - uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Read by trusted-signing-cli (Windows only; empty elsewhere).
+          AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+          AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+          AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+        with:
+          tagName: ${{ github.ref_name }}
+          releaseName: Other ${{ github.ref_name }}
+          releaseBody: "Download the file for your system under Assets: macOS .dmg, Windows .msi or -setup.exe, Linux .AppImage, .deb or .rpm."
+          releaseDraft: true
+          prerelease: false
+          args: ${{ matrix.args }}

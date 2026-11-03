@@ -1,0 +1,11 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <!-- Other logomark (transparent): for web, docs, menu bar (recolor via fill/stroke) -->
+  <defs>
+    <clipPath id="meClip">
+      <circle cx="199" cy="256" r="106"/>
+    </clipPath>
+  </defs>
+  <circle cx="316" cy="256" r="106" fill="none" stroke="currentColor" stroke-width="21" opacity="0.85"/>
+  <circle cx="199" cy="256" r="106" fill="currentColor"/>
+  <circle cx="316" cy="256" r="106" fill="none" stroke="#ffffff" stroke-width="21" clip-path="url(#meClip)"/>
+</svg>

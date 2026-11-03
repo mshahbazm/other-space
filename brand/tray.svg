@@ -1,0 +1,7 @@
+<svg width="44" height="44" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  <!-- Menu-bar template icon: black + alpha only (macOS recolors it). -->
+  <!-- Ring (the other) behind, solid disc (you) in front. -->
+  <path fill="#000000" fill-rule="evenodd"
+        d="M62 20a30 30 0 1 0 0 60 30 30 0 0 0 0-60zm0 19a11 11 0 1 1 0 22 11 11 0 0 1 0-22z"/>
+  <circle cx="38" cy="50" r="30" fill="#000000"/>
+</svg>
