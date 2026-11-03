@@ -102,7 +102,7 @@ pub fn run() {
             Ok(())
         })
         // Closing the window keeps Other in the menu bar (and off the
-        // Dock); the tray's "Manage Accounts…" brings it back.
+        // Dock); the tray's "Manage Accounts" brings it back.
         .on_window_event(|window, event| {
             if let tauri::WindowEvent::CloseRequested { api, .. } = event {
                 api.prevent_close();

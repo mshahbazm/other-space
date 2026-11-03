@@ -96,8 +96,8 @@ export function renderAccount(a: Account, index: number): HTMLElement {
   } else {
     const more = iconOnly("more", "More");
     const items: MenuItem[] = [];
-    if (state.accounts.length > 1) items.push({ label: "Copy Settings From…", run: () => copySettings(a) }, null);
-    items.push({ label: "Remove…", danger: true, run: () => removeAccount(a) });
+    if (state.accounts.length > 1) items.push({ label: "Copy Settings From", run: () => copySettings(a) }, null);
+    items.push({ label: "Remove", danger: true, run: () => removeAccount(a) });
     more.onclick = () => showMenu(more, items);
     actions.append(more);
   }

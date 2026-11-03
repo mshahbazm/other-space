@@ -22,14 +22,14 @@ the trial and license prompt.
 
 - **Trial:** starts on first launch and lasts 7 days. Afterwards a bar at
   the bottom of the window and items in the menu bar point to "Buy License"
-  and "Enter Key…".
+  and "Enter Key".
 - **Activating:** the key is sent to the licensing API together with a
   random per-install device id and the computer's name, so the buyer can see
   and manage their activated computers.
 - **Re-checking:** a licensed install re-checks its key about once a week in
   the background. Only a clear "not valid" answer (refund, revoked) removes
   the license; being offline never does.
-- **Moving to another computer:** "Manage… → Deactivate This Computer"
+- **Moving to another computer:** "Manage → Deactivate This Computer"
   frees the activation.
 - **Storage:** `license.json` in the app's data folder (trial start, device
   id, key, activation id, email). The app contains no secrets.

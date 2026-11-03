@@ -50,11 +50,11 @@ pub fn build_menu(app: &AppHandle) -> tauri::Result<Menu<Wry>> {
     };
     if let Some(label) = trial_label {
         menu.append(&MenuItem::with_id(app, "trial", label, false, None::<&str>)?)?;
-        menu.append(&item("buy".into(), "Buy License…")?)?;
-        menu.append(&item("enter-key".into(), "Enter License Key…")?)?;
+        menu.append(&item("buy".into(), "Buy License")?)?;
+        menu.append(&item("enter-key".into(), "Enter License Key")?)?;
         menu.append(&PredefinedMenuItem::separator(app)?)?;
     }
-    menu.append(&item("open".into(), "Manage Accounts…")?)?;
+    menu.append(&item("open".into(), "Manage Accounts")?)?;
     menu.append(&item("quit".into(), "Quit Other")?)?;
     Ok(menu)
 }

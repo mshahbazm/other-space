@@ -62,7 +62,7 @@ function render() {
   const actions = el("div", "license-actions");
   const buy = push("Buy License", { className: status.state === "expired" ? "primary" : "" });
   buy.onclick = () => call("buy_license");
-  const key = push("Enter Key…");
+  const key = push("Enter Key");
   key.onclick = enterKey;
 
   switch (status.state) {
@@ -76,7 +76,7 @@ function render() {
       break;
     case "licensed": {
       text.textContent = status.email ? `Licensed to ${status.email}` : "Licensed";
-      const m = push("Manage…");
+      const m = push("Manage");
       m.onclick = manage;
       actions.append(m);
       break;
@@ -88,7 +88,7 @@ function render() {
 export async function initLicense() {
   status = (await call<LicenseStatus>("license_status")) ?? { state: "free" };
   render();
-  // "Enter License Key…" in the menu bar opens this window and the sheet.
+  // "Enter License Key" in the menu bar opens this window and the sheet.
   await listen("enter-license-key", () => enterKey());
 }
 

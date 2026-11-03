@@ -81,7 +81,7 @@ export function renderShellStatus() {
   } else if (installed) {
     box.append(el("span", "status-on", "● "), `Terminal switching is on (${shell}).`);
   } else {
-    const link = el("button", "link", "Set up your terminal…") as HTMLButtonElement;
+    const link = el("button", "link", "Set up your terminal") as HTMLButtonElement;
     link.type = "button";
     link.onclick = setUpShell;
     box.append("One-time step: ", link);
